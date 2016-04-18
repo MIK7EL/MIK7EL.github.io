@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>All-aRound Config</title>
+        <style TYPE="text/css"> 
+            input.switch:empty
+            {
+	            margin-left: -999px;
+            }
+            input.switch:empty ~ label
+            {
+	            position: relative;
+	            float: left;
+	            line-height: 1.6em;
+	            text-indent: 4em;
+	            margin: 0.2em 0;
+	            cursor: pointer;
+	            -webkit-user-select: none;
+	            -moz-user-select: none;
+	            -ms-user-select: none;
+	            user-select: none;
+            }
+            input.switch:empty ~ label:before, 
+            input.switch:empty ~ label:after
+            {
+	            position: absolute;
+	            display: block;
+	            top: 0;
+	            bottom: 0;
+	            left: 0;
+	            content: ' ';
+	            width: 3.6em;
+	            background-color: #c33;
+	            border-radius: 0.3em;
+	            box-shadow: inset 0 0.2em 0 rgba(0,0,0,0.3);
+	            -webkit-transition: all 100ms ease-in;
+	            transition: all 100ms ease-in;
+            }
+
+            input.switch:empty ~ label:after
+            {
+	            width: 1.4em;
+	            top: 0.1em;
+	            bottom: 0.1em;
+	            margin-left: 0.1em;
+	            background-color: #fff;
+	            border-radius: 0.15em;
+	            box-shadow: inset 0 -0.2em 0 rgba(0,0,0,0.2);
+            }
+            input.switch:checked ~ label:before
+            {
+	            background-color: #393;
+            }
+
+            input.switch:checked ~ label:after
+            {
+	            margin-left: 2em;
+            }
+        </style>
+    </head>
+    <body onload="loadOptions()">
+        <h1>All-aRound Config</h1>
+        <div>
+            <table>
+                <tr>
+                    <td>Always show the Bluetooth icon</td>
+                    <td>
+                        <input id="bluetooth_select" type="checkbox" name="bluetooth_select" class="switch" />
+                        <label for="bluetooth_select">&nbsp;</label>
+                    </td>
+                </tr>
+                <tr>
+                	<td colspan="2"><i>Turn off to only show when disconnected from device</i></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <div>
+            <table>
+                <tr>
+                    <td>Always show the Battery icon</td>
+                    <td>
+                        <input id="battery_select" type="checkbox" name="battery_select" class="switch" />
+                        <label for="battery_select">&nbsp;</label>
+                    </td>
+                </tr>
+                <tr>
+                	<td colspan="2"><i>Turn off to only show when at 20% or less</i></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <div>
+            <table>
+                <tr>
+                    <td>Show the Date</td>
+                    <td>
+                        <input id="date_select" type="checkbox" name="date_select" class="switch" />
+                        <label for="date_select">&nbsp;</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><i>mm - yyyy</i></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <div>
+            <table>
+                <tr>
+                    <td>Show the Day</td>
+                    <td>
+                        <input id="day_select" type="checkbox" name="day_select" class="switch" />
+                        <label for="day_select">&nbsp;</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><i>month dd day</i></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <div>
+            <table>
+                <tr>
+                    <td>Show the Weather</td>
+                    <td>
+                        <input id="weather_select" type="checkbox" name="weather_select" class="switch" />
+                        <label for="weather_select">&nbsp;</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <p>
+            <button id="save_button">Save</button>
+        </p>
+    </body>
+</html>
+
+<script>
+    function loadOptions() {
+        var bluetoothSelect = document.getElementById("bluetooth_select");
+        var batterySelect = document.getElementById("battery_select");
+        var weatherSelect = document.getElementById("weather_select");
+        var dateSelect = document.getElementById("date_select");
+        var daySelect = document.getElementById("day_select");
+
+        if (localStorage.bluetooth) {
+        bluetoothSelect.checked = localStorage.bluetooth === 'true';
+        batterySelect.checked = localStorage.battery === 'true';
+        weatherSelect.checked = localStorage.weather === 'true';
+        dateSelect.checked = localStorage.date === 'true';
+        daySelect.checked = localStorage.day === 'true';
+        }
+    };
+
+    function saveOptions() {
+        var bluetoothSelect = document.getElementById("bluetooth_select");
+        var batterySelect = document.getElementById("battery_select");
+        var weatherSelect = document.getElementById("weather_select");
+        var dateSelect = document.getElementById("date_select");
+        var daySelect = document.getElementById("day_select");
+
+        var options = {
+            "bluetooth": bluetoothSelect.checked, 
+            "battery": batterySelect.checked,
+            "weather": weatherSelect.checked,
+            "date": dateSelect.checked,
+            "day": daySelect.checked
+        }
+
+        localStorage.bluetooth = options.bluetooth;
+        localStorage.battery = options.battery;
+        localStorage.weather = options.weather;
+        localStorage.date = options.date;
+        localStorage.day = options.day;
+
+        return options;
+    };
+
+    function getQueryParam(variable, defaultValue) {
+		var query = location.search.substring(1);
+		var vars = query.split('&');
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split('=');
+			if (pair[0] === variable) {
+				return decodeURIComponent(pair[1]);
+			}
+		}
+		return defaultValue || false;
+    }
+    
+    var submitButton = document.getElementById("save_button");
+    submitButton.addEventListener("click", function() {
+        console.log("Submit");
+        var options = saveOptions();
+        var return_to = getQueryParam('return_to', 'pebblejs://close#');
+		var location = return_to + encodeURIComponent(JSON.stringify(options));
+        document.location = location;
+    },false);
+</script>
