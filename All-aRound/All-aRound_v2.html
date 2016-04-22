@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Slate Example Configuration</title>
+        <title>All-aRound Watchface Configuration</title>
         <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
         <script src='js/slate.min.js'></script>
         <style>
@@ -34,7 +34,7 @@
                 </label>
             </div>
             <div class='item-container-footer'>
-                Turn off to only show when disconnected from device.
+                Set off to only show when disconnected from device.
             </div>
             <div class='item-container-content'>
                 <label class='item'>Always show the Battery icon
@@ -42,7 +42,7 @@
                 </label>
             </div>
             <div class='item-container-footer'>
-                Turn off to only show when at 20% or less.
+                Set off to only show when at 20% or less.
             </div>
             <div class='item-container-content'>
                 <label class='item'>Show the Date
@@ -74,6 +74,7 @@
             </div>
         </div>
     </body>
+
     <script>
         function getConfigData() {
             var bluetoothCheckbox = document.getElementById('bluetooth_checkbox');
@@ -136,13 +137,6 @@
                 dateCheckbox.checked = JSON.parse(localStorage['date']);
                 dayCheckbox.checked = JSON.parse(localStorage['day']);
                 weatherCheckbox.checked = JSON.parse(localStorage['weather']);
-            }
-            else {
-                bluetoothCheckbox.checked = true;
-                batteryCheckbox.checked = true;
-                dateCheckbox.checked = true;
-                dayCheckbox.checked = true;
-                weatherCheckbox.checked = true;
             }
         })();
     </script>
