@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>All-aRound Watchface Configuration</title>
+        <link rel='stylesheet' type='text/css' href='css/slate.min.css'>
+        <script src='js/slate.min.js'></script>
+        <style>
+            .title {
+            padding: 15px 10px;
+            text-transform: uppercase;
+            font-family: 'PT Sans', sans-serif;
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #888888;
+            text-align: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1 class='title'>All-aRound Watchface Configuration</h1>
+        <div class='item-container'>
+            <div class='item-container-content'>
+                <div class='item'>
+                    Use this configuration page to choose the settings you would like applied to this app.
+                </div>
+            </div>
+        </div>
+        <div class='item-container'>
+            <div class='item-container-header'>Settings</div>
+            <div class='item-container-content'>
+                <label class='item'>Always show the Bluetooth icon
+                    <input id='bluetooth_checkbox' type='checkbox' class='item-toggle'>
+                </label>
+            </div>
+            <div class='item-container-footer'>
+                Set off to only show when disconnected from device.
+            </div>
+            <div class='item-container-content'>
+                <label class='item'>Always show the Battery icon
+                    <input id='battery_checkbox' type='checkbox' class='item-toggle'>
+                </label>
+            </div>
+            <div class='item-container-footer'>
+                Set off to only show when at 20% or less.
+            </div>
+            <div class='item-container-content'>
+                <label class='item'>Show the Date
+                    <input id='date_checkbox' type='checkbox' class='item-toggle'>
+                </label>
+            </div>
+            <div class='item-container-footer'>
+                mm-yyyy
+            </div>
+            <div class='item-container-content'>
+                <label class='item'>Show the Day
+                    <input id='day_checkbox' type='checkbox' class='item-toggle'>
+                </label>
+            </div>
+            <div class='item-container-footer'>
+                month dd day
+            </div>
+            <div class='item-container-content'>
+                <label class='item'>Show the Weather
+                    <input id='weather_checkbox' type='checkbox' class='item-toggle'>
+                </label>
+            </div>
+            <div class='item-container-footer'>
+            </div>
+			<div class='item-container-content'>
+                <label class='item'>Show temperature in Celsius
+                    <input id='temperatureP_checkbox' type='checkbox' class='item-toggle'>
+                </label>
+            </div>
+            <div class='item-container-footer'>
+				Set off to use Fahrenheit
+            </div>
+        </div>
+        <div class='item-container'>
+            <div class='button-container'>
+                <input id='submit_button' type='button' class='item-button' value='SAVE'>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        function getConfigData() {
+            var bluetoothCheckbox = document.getElementById('bluetooth_checkbox');
+            var batteryCheckbox = document.getElementById('battery_checkbox');
+            var dateCheckbox = document.getElementById('date_checkbox');
+            var dayCheckbox = document.getElementById('day_checkbox');
+            var weatherCheckbox = document.getElementById('weather_checkbox');
+			var temperaturePCheckbox = document.getElementById('temperatureP_checkbox');
+ 
+            var options = {
+                'bluetooth': bluetoothCheckbox.checked, 
+                'battery': batteryCheckbox.checked, 
+                'date': dateCheckbox.checked, 
+                'day': dayCheckbox.checked, 
+                'weather': weatherCheckbox.checked
+				'temperatureP': temperaturePCheckbox.checked
+            };
+            // Save for next launch
+            localStorage['bluetooth'] = options['bluetooth'];
+            localStorage['battery'] = options['battery'];
+            localStorage['date'] = options['date'];
+            localStorage['day'] = options['day'];
+            localStorage['weather'] = options['weather'];
+			localStorage['temperatureP'] = options['temperatureP'];
+            console.log('Got options: ' + JSON.stringify(options));
+            return options;
+        }
+        function getQueryParam(variable, defaultValue) {
+            var query = location.search.substring(1);
+            var vars = query.split('&');
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+                if (pair[0] === variable) {
+                    return decodeURIComponent(pair[1]);
+                }
+            }
+            return defaultValue || false;
+        }
+ 
+        var submitButton = document.getElementById('submit_button');
+        submitButton.addEventListener('click', function() {
+            console.log('Submit');
+            // Set the return URL depending on the runtime environment
+            var return_to = getQueryParam('return_to', 'pebblejs://close#');
+            document.location = return_to + encodeURIComponent(JSON.stringify(getConfigData()));
+        });
+        (function() {
+            var bluetoothCheckbox = document.getElementById('bluetooth_checkbox');
+            var batteryCheckbox = document.getElementById('battery_checkbox');
+            var dateCheckbox = document.getElementById('date_checkbox');
+            var dayCheckbox = document.getElementById('day_checkbox');
+            var weatherCheckbox = document.getElementById('weather_checkbox');
+			var temperaturePCheckbox = document.getElementById('temperatureP_checkbox');
+            // Load any previously saved configuration, if available
+            if(localStorage['bluetooth']) {
+                bluetoothCheckbox.checked = JSON.parse(localStorage['bluetooth']);
+                batteryCheckbox.checked = JSON.parse(localStorage['battery']);
+                dateCheckbox.checked = JSON.parse(localStorage['date']);
+                dayCheckbox.checked = JSON.parse(localStorage['day']);
+                weatherCheckbox.checked = JSON.parse(localStorage['weather']);
+				temperaturePCheckbox.checked = JSON.parse(localStorage['temperatureP']);
+            }
+        })();
+    </script>
+</html>
